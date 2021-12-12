@@ -7,9 +7,9 @@ let Sprite = PIXI.Sprite;
 let difficulty = 'easy';
 let subLevel = 0;
 var stageSizes = {
-  'easy': {r: 8, c:8},
-  'medium': {r: 10, c:10},
-  'hard': {r: 15, c:15}
+  'easy': {r: 8, c:8, offsetX:100, offsetY:0, scale: 60},
+  'medium': {r: 10, c:10, offsetX:100, offsetY: 20, scale: 45},
+  'hard': {r: 15, c:15, offsetX:200, offsetY: 40, scale: 30}
 }
 //let resources = PIXI.loader.resources;
 document.body.appendChild(app.view);
@@ -122,7 +122,7 @@ function selectDifficulty(){
 }
 
 function drawMaze(currentMaze){
-  var scale = difficulty==='easy'? 60 : difficulty==='medium'? 50 : 30;
+  var scale = stageSizes[difficulty].scale;
 
   currentMaze.forEach(function ilevelfunc(itemI, indexI){
     currentMaze[indexI].forEach(function(itemJ, indexJ){
@@ -131,8 +131,8 @@ function drawMaze(currentMaze){
         var mazewallLeft = new Sprite(loader.resources.mazewall.texture);
         mazewallLeft.width = scale/4;
         mazewallLeft.height = scale*1.25;
-        mazewallLeft.x = ((app.renderer.width-scale)/stageSizes[difficulty].r)+(itemJ.x*scale);
-        mazewallLeft.y = ((app.renderer.height-scale)/stageSizes[difficulty].c)+(itemJ.y*scale);
+        mazewallLeft.x = ((app.renderer.width-scale)/stageSizes[difficulty].r)+(itemJ.x*scale) + stageSizes[difficulty].offsetX;
+        mazewallLeft.y = ((app.renderer.height-scale)/stageSizes[difficulty].c)+(itemJ.y*scale) + stageSizes[difficulty].offsetY;
         mazeStage.addChild(mazewallLeft);
       }
 
@@ -140,8 +140,8 @@ function drawMaze(currentMaze){
         var mazewallTop = new Sprite(loader.resources.mazewall.texture);
         mazewallTop.width = scale;
         mazewallTop.height = scale/4;
-        mazewallTop.x = ((app.renderer.width-scale)/stageSizes[difficulty].r)+(itemJ.x*scale);
-        mazewallTop.y = ((app.renderer.height-scale)/stageSizes[difficulty].c)+(itemJ.y*scale);
+        mazewallTop.x = ((app.renderer.width-scale)/stageSizes[difficulty].r)+(itemJ.x*scale)+ stageSizes[difficulty].offsetX;
+        mazewallTop.y = ((app.renderer.height-scale)/stageSizes[difficulty].c)+(itemJ.y*scale) + stageSizes[difficulty].offsetY;
         console.log(`${mazewallTop.x},${mazewallTop.x}`)
         mazeStage.addChild(mazewallTop);
       }
@@ -150,8 +150,8 @@ function drawMaze(currentMaze){
         var mazewallRight = new Sprite(loader.resources.mazewall.texture);
         mazewallRight.width = scale/4;
         mazewallRight.height = scale*1.25;
-        mazewallRight.x = ((app.renderer.width-scale)/stageSizes[difficulty].r)+(itemJ.x*scale) + (scale);
-        mazewallRight.y = ((app.renderer.height-scale)/stageSizes[difficulty].c)+(itemJ.y*scale);
+        mazewallRight.x = ((app.renderer.width-scale)/stageSizes[difficulty].r)+(itemJ.x*scale) + (scale)+ stageSizes[difficulty].offsetX;
+        mazewallRight.y = ((app.renderer.height-scale)/stageSizes[difficulty].c)+(itemJ.y*scale)+ stageSizes[difficulty].offsetY;
         mazeStage.addChild(mazewallRight);
       }
 
@@ -159,8 +159,8 @@ function drawMaze(currentMaze){
         var mazewallBottom = new Sprite(loader.resources.mazewall.texture);
         mazewallBottom.width = scale;
         mazewallBottom.height = scale/4;
-        mazewallBottom.x = ((app.renderer.width-scale)/stageSizes[difficulty].r)+(itemJ.x*scale);
-        mazewallBottom.y = ((app.renderer.height-scale)/stageSizes[difficulty].c)+(itemJ.y*scale)+(scale);
+        mazewallBottom.x = ((app.renderer.width-scale)/stageSizes[difficulty].r)+(itemJ.x*scale)+ stageSizes[difficulty].offsetX;
+        mazewallBottom.y = ((app.renderer.height-scale)/stageSizes[difficulty].c)+(itemJ.y*scale)+(scale) + stageSizes[difficulty].offsetY;
         mazeStage.addChild(mazewallBottom);
       }
 
@@ -168,8 +168,8 @@ function drawMaze(currentMaze){
       var test = new Sprite(loader.resources.button.texture);
       test.width = 5;
       test.height = 5;
-      test.x = ((app.renderer.width-scale)/stageSizes[difficulty].r)+(indexJ*scale) +15;
-      test.y = ((app.renderer.height-scale)/stageSizes[difficulty].c)+(indexI*scale) +15;
+      test.x = ((app.renderer.width-scale)/stageSizes[difficulty].r)+(indexJ*scale) +15+ stageSizes[difficulty].offsetX;
+      test.y = ((app.renderer.height-scale)/stageSizes[difficulty].c)+(indexI*scale) +15 + stageSizes[difficulty].offsetY;
       mazeStage.addChild(test);
 
     })
@@ -177,18 +177,21 @@ function drawMaze(currentMaze){
 
   //Draw startpoint
   var startPoint = new Sprite(loader.resources.button.texture);
-  startPoint.x = ((app.renderer.width-scale)/stageSizes[difficulty].r) -50;
-  startPoint.y = ((app.renderer.height-scale)/stageSizes[difficulty].c) -50;
+  startPoint.x = ((app.renderer.width-scale)/stageSizes[difficulty].r) -50+ stageSizes[difficulty].offsetX;
+  startPoint.y = ((app.renderer.height-scale)/stageSizes[difficulty].c) -50 + stageSizes[difficulty].offsetY;
   startPoint.width =100;
   startPoint.height =50;
   var startPointText = new PIXI.Text('Start -->', {"fill": "white", "align": "center"});
-  startPointText.x = startPoint.x  +20;
+  startPointText.x =   50;
   startPointText.y = 30;
   startPoint.addChild(startPointText);
   mazeStage.addChild(startPoint)
 
   //Draw endpoint
-
+  var goal = new Sprite(loader.resources.pumpkincrow.texture);
+  goal.x = app.renderer.width - (goal.width );
+  goal.y = app.renderer.height - (goal.height );
+  mazeStage.addChild(goal)
 }
 
 function playMaze(){
