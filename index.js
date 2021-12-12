@@ -175,6 +175,19 @@ function drawMaze(currentMaze){
     })
   })
 
+  //Draw startpoint
+  var startPoint = new Sprite(loader.resources.button.texture);
+  startPoint.x = ((app.renderer.width-scale)/stageSizes[difficulty].r) -50;
+  startPoint.y = ((app.renderer.height-scale)/stageSizes[difficulty].c) -50;
+  startPoint.width =100;
+  startPoint.height =50;
+  var startPointText = new PIXI.Text('Start -->', {"fill": "white", "align": "center"});
+  startPointText.x = startPoint.x  +20;
+  startPointText.y = 30;
+  startPoint.addChild(startPointText);
+  mazeStage.addChild(startPoint)
+
+  //Draw endpoint
 
 }
 
