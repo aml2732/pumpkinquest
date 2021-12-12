@@ -122,33 +122,56 @@ function selectDifficulty(){
 }
 
 function drawMaze(currentMaze){
-
+  var scale = difficulty==='easy'? 60 : difficulty==='medium'? 50 : 30;
 
   currentMaze.forEach(function ilevelfunc(itemI, indexI){
     currentMaze[indexI].forEach(function(itemJ, indexJ){
 
       if(currentMaze[indexI][indexJ].left){
-
+        var mazewallLeft = new Sprite(loader.resources.mazewall.texture);
+        mazewallLeft.width = scale/4;
+        mazewallLeft.height = scale*1.25;
+        mazewallLeft.x = ((app.renderer.width-scale)/stageSizes[difficulty].r)+(itemJ.x*scale);
+        mazewallLeft.y = ((app.renderer.height-scale)/stageSizes[difficulty].c)+(itemJ.y*scale);
+        mazeStage.addChild(mazewallLeft);
       }
 
       if(currentMaze[indexI][indexJ].top){
-
+        var mazewallTop = new Sprite(loader.resources.mazewall.texture);
+        mazewallTop.width = scale;
+        mazewallTop.height = scale/4;
+        mazewallTop.x = ((app.renderer.width-scale)/stageSizes[difficulty].r)+(itemJ.x*scale);
+        mazewallTop.y = ((app.renderer.height-scale)/stageSizes[difficulty].c)+(itemJ.y*scale);
+        console.log(`${mazewallTop.x},${mazewallTop.x}`)
+        mazeStage.addChild(mazewallTop);
       }
 
       if(currentMaze[indexI][indexJ].right){
-
+        var mazewallRight = new Sprite(loader.resources.mazewall.texture);
+        mazewallRight.width = scale/4;
+        mazewallRight.height = scale*1.25;
+        mazewallRight.x = ((app.renderer.width-scale)/stageSizes[difficulty].r)+(itemJ.x*scale) + (scale);
+        mazewallRight.y = ((app.renderer.height-scale)/stageSizes[difficulty].c)+(itemJ.y*scale);
+        mazeStage.addChild(mazewallRight);
       }
 
       if(currentMaze[indexI][indexJ].bottom){
-
+        var mazewallBottom = new Sprite(loader.resources.mazewall.texture);
+        mazewallBottom.width = scale;
+        mazewallBottom.height = scale/4;
+        mazewallBottom.x = ((app.renderer.width-scale)/stageSizes[difficulty].r)+(itemJ.x*scale);
+        mazewallBottom.y = ((app.renderer.height-scale)/stageSizes[difficulty].c)+(itemJ.y*scale)+(scale);
+        mazeStage.addChild(mazewallBottom);
       }
 
-      //Test code
-      var mazewallN = new Sprite(loader.resources.mazewall.texture);
-      mazewallN.x = (((app.renderer.width-100)/stageSizes[difficulty].r)+(indexI*100)-100);
-      mazewallN.y = (((app.renderer.height-100)/stageSizes[difficulty].c)+(indexJ*100)-100);
-      console.log("x,y:",`(${mazewallN.x},${mazewallN.y})`);
-      mazeStage.addChild(mazewallN);
+      //test reference icon
+      var test = new Sprite(loader.resources.button.texture);
+      test.width = 5;
+      test.height = 5;
+      test.x = ((app.renderer.width-scale)/stageSizes[difficulty].r)+(indexJ*scale) +15;
+      test.y = ((app.renderer.height-scale)/stageSizes[difficulty].c)+(indexI*scale) +15;
+      mazeStage.addChild(test);
+
     })
   })
 

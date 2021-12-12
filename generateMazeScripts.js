@@ -23,7 +23,7 @@ async function runner(){
 
   console.log("Begin generating hard mazes...");
   for(let i=0;i<numberOfHardMazes; i++){
-    hardMazes.push(generator(10, 10));
+    hardMazes.push(generator(15, 15));
   }
 
   const output = {
