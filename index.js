@@ -211,9 +211,6 @@ function setupKeyBehaviors(){
     movePlayer();
   }
 
-  /*left.release = function(){
-    player.x = 0;
-  }*/
 
   right.press= function(){
     console.log('clicked right');
@@ -227,7 +224,24 @@ function setupKeyBehaviors(){
     movePlayer();
   }
 
-  //right.release = left.release;
+  up.press= function(){
+    console.log('clicked up');
+    if(isOutBoundChecks(digitalX, digitalY-1)){return;}
+    var cell =  currentMaze[digitalY][digitalX];
+    if(cell.top){return;}
+    digitalY = digitalY -1;
+    movePlayer();
+  }
+
+  down.press= function(){
+    console.log('clicked up');
+    if(isOutBoundChecks(digitalX, digitalY+1)){return;}
+    var cell =  currentMaze[digitalY][digitalX];
+    if(cell.bottom){return;}
+    digitalY = digitalY +1;
+    movePlayer();
+  }
+
 
 }
 
