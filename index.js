@@ -15,6 +15,9 @@ var stageSizes = {
 document.body.appendChild(app.view);
 
 var startStage, levelSelectStage, mazeStage;
+var player;
+var left, right, up, down;
+var digitalX, digitalY;
 
 
 function init(){
@@ -22,6 +25,7 @@ function init(){
   .add('pumpkincrow','./img/pumpkinGoal.png')
   .add('mazewall','./img/mazeWall.png')
   .add('button', './img/signButton.png')
+  .add('player', './img/player.png')
   .load(startScreen);
 }
 
@@ -121,6 +125,133 @@ function selectDifficulty(){
   app.renderer.render(levelSelectStage);
 }
 
+//This function is coppied verbatim from here: https://github.com/kittykatattack/learningPixi
+function keyboard(value) {
+  const key = {};
+  key.value = value;
+  key.isDown = false;
+  key.isUp = true;
+  key.press = undefined;
+  key.release = undefined;
+  //The `downHandler`
+  key.downHandler = function downHandler(event) {
+    if (event.key === key.value) {
+      if (key.isUp && key.press) {
+        key.press();
+      }
+      key.isDown = true;
+      key.isUp = false;
+      event.preventDefault();
+    }
+  };
+
+  //The `upHandler`
+  key.upHandler = function upHandler(event) {
+    if (event.key === key.value) {
+      if (key.isDown && key.release) {
+        key.release();
+      }
+      key.isDown = false;
+      key.isUp = true;
+      event.preventDefault();
+    }
+  };
+
+  //Attach event listeners
+  const downListener = key.downHandler.bind(key);
+  const upListener = key.upHandler.bind(key);
+
+  window.addEventListener("keydown", downListener, false);
+  window.addEventListener("keyup", upListener, false);
+
+  // Detach event listeners
+  key.unsubscribe = function unsubscribe() {
+    window.removeEventListener("keydown", downListener);
+    window.removeEventListener("keyup", upListener);
+  };
+
+  return key;
+}
+
+function movePlayer(){
+   var scale = stageSizes[difficulty].scale;
+   var radiusSize = 15;
+   console.log(`digital x,y (${digitalX}, ${digitalY})`)
+   tempX = ((app.renderer.width-scale)/stageSizes[difficulty].r)+(digitalX*scale)+stageSizes[difficulty].offsetX+(scale/2);
+   tempY = ((app.renderer.height-scale)/stageSizes[difficulty].c)+(digitalY*scale) + stageSizes[difficulty].offsetY+(scale/2);
+   player.position.set(tempX, tempY)
+  //console.log(`actual x,y (${player.x}, ${player.y})`)
+
+}
+
+function setupKeyBehaviors(){
+  let currentMaze = levels[difficulty][subLevel%levels[difficulty].length];
+  console.log(currentMaze);
+  left = keyboard("ArrowLeft");
+  up = keyboard("ArrowUp");
+  right = keyboard("ArrowRight");
+  down = keyboard("ArrowDown");
+
+  function isOutBoundChecks(x,y){
+    return (x<0) || (y<0) || x>currentMaze.length || y>currentMaze[0].length;
+  }
+
+  left.press= function(){
+    console.log('clicked left')
+    //Calculate if user can move left
+    if(isOutBoundChecks(digitalX-1, digitalY)){return;}
+    console.log('gothere 1')
+    var cell = currentMaze[digitalY][digitalX];
+    console.log('cell?', cell)
+    console.log('gothere 2')
+    if(cell.left){return;}
+    console.log('got here 3')
+    digitalX = digitalX-1;
+    //If they can move left, update player value
+    movePlayer();
+  }
+
+  /*left.release = function(){
+    player.x = 0;
+  }*/
+
+  right.press= function(){
+    console.log('clicked right');
+    //Calculate if user can move right
+    if(isOutBoundChecks(digitalX+1, digitalY)){return;}
+    var cell = currentMaze[digitalY][digitalX];
+    console.log('cell?', cell)
+    if(cell.right){return;}
+    digitalX = digitalX+1;
+    //If they can move left, update player value
+    movePlayer();
+  }
+
+  //right.release = left.release;
+
+}
+
+
+function drawPlayer(x,y){
+   var scale = stageSizes[difficulty].scale;
+   var radiusSize = 15;
+   player = new Sprite(loader.resources.player.texture);
+   player.x =  ((app.renderer.width-scale)/stageSizes[difficulty].r)+(digitalX*scale)+stageSizes[difficulty].offsetX+(scale/2)
+   player.y = ((app.renderer.height-scale)/stageSizes[difficulty].c)+(digitalY*scale) + stageSizes[difficulty].offsetY+(scale/2)
+   player.width = scale/2;
+   player.height=scale/2;
+   /*
+   player = new PIXI.Graphics();
+   player.beginFill(0x000000);
+   player.drawCircle(
+     ((app.renderer.width-scale)/stageSizes[difficulty].r)+(digitalX*scale)+stageSizes[difficulty].offsetX+(scale/2+radiusSize/2),
+     ((app.renderer.height-scale)/stageSizes[difficulty].c)+(digitalY*scale) + stageSizes[difficulty].offsetY+(scale/2+radiusSize/2),
+     15);
+   player.endFill();
+   */
+   mazeStage.addChild(player);
+}
+
 function drawMaze(currentMaze){
   var scale = stageSizes[difficulty].scale;
 
@@ -142,7 +273,6 @@ function drawMaze(currentMaze){
         mazewallTop.height = scale/4;
         mazewallTop.x = ((app.renderer.width-scale)/stageSizes[difficulty].r)+(itemJ.x*scale)+ stageSizes[difficulty].offsetX;
         mazewallTop.y = ((app.renderer.height-scale)/stageSizes[difficulty].c)+(itemJ.y*scale) + stageSizes[difficulty].offsetY;
-        console.log(`${mazewallTop.x},${mazewallTop.x}`)
         mazeStage.addChild(mazewallTop);
       }
 
@@ -192,15 +322,21 @@ function drawMaze(currentMaze){
   goal.x = app.renderer.width - (goal.width );
   goal.y = app.renderer.height - (goal.height );
   mazeStage.addChild(goal)
+
+  //Generate digital map to track your location through the maze.
+  digitalX=0;
+  digitalY=0;
+
 }
 
 function playMaze(){
   mazeStage = new PIXI.Container();
   app.renderer.backgroundColor = "0xE79C29";
-  let currentMaze = levels[difficulty][subLevel%levels[difficulty].length];
+  var currentMaze = levels[difficulty][subLevel%levels[difficulty].length];
   console.log(currentMaze);
   drawMaze(currentMaze);
-
+  drawPlayer(0,0);
+  setupKeyBehaviors();
   app.stage.addChild(mazeStage);
   app.renderer.render(mazeStage);
 }
