@@ -173,6 +173,17 @@ function keyboard(value) {
   return key;
 }
 
+function isWinConditionMet(){
+  let currentMaze = levels[difficulty][subLevel%levels[difficulty].length];
+  return (digitalX==(currentMaze.length-1) && digitalY==(currentMaze[0].length-1))
+}
+
+function checkWinCondition(){
+  if(isWinConditionMet()){
+    console.log('WinCondition met');
+  }
+}
+
 function movePlayer(){
    var scale = stageSizes[difficulty].scale;
    var radiusSize = 15;
@@ -200,6 +211,7 @@ function setupKeyBehaviors(){
     digitalX = digitalX-1;
     //If they can move left, update player value
     movePlayer();
+    checkWinCondition();
   }
 
 
@@ -211,6 +223,7 @@ function setupKeyBehaviors(){
     digitalX = digitalX+1;
     //If they can move left, update player value
     movePlayer();
+    checkWinCondition();
   }
 
   up.press= function(){
@@ -219,6 +232,7 @@ function setupKeyBehaviors(){
     if(cell.top){return;}
     digitalY = digitalY -1;
     movePlayer();
+    checkWinCondition();
   }
 
   down.press= function(){
@@ -227,6 +241,7 @@ function setupKeyBehaviors(){
     if(cell.bottom){return;}
     digitalY = digitalY +1;
     movePlayer();
+    checkWinCondition();
   }
 
 
