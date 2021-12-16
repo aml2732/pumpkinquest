@@ -176,17 +176,13 @@ function keyboard(value) {
 function movePlayer(){
    var scale = stageSizes[difficulty].scale;
    var radiusSize = 15;
-   console.log(`digital x,y (${digitalX}, ${digitalY})`)
    tempX = ((app.renderer.width-scale)/stageSizes[difficulty].r)+(digitalX*scale)+stageSizes[difficulty].offsetX+(scale/2);
    tempY = ((app.renderer.height-scale)/stageSizes[difficulty].c)+(digitalY*scale) + stageSizes[difficulty].offsetY+(scale/2);
    player.position.set(tempX, tempY)
-  //console.log(`actual x,y (${player.x}, ${player.y})`)
-
 }
 
 function setupKeyBehaviors(){
   let currentMaze = levels[difficulty][subLevel%levels[difficulty].length];
-  console.log(currentMaze);
   left = keyboard("ArrowLeft");
   up = keyboard("ArrowUp");
   right = keyboard("ArrowRight");
@@ -197,15 +193,10 @@ function setupKeyBehaviors(){
   }
 
   left.press= function(){
-    console.log('clicked left')
     //Calculate if user can move left
     if(isOutBoundChecks(digitalX-1, digitalY)){return;}
-    console.log('gothere 1')
     var cell = currentMaze[digitalY][digitalX];
-    console.log('cell?', cell)
-    console.log('gothere 2')
     if(cell.left){return;}
-    console.log('got here 3')
     digitalX = digitalX-1;
     //If they can move left, update player value
     movePlayer();
@@ -213,11 +204,9 @@ function setupKeyBehaviors(){
 
 
   right.press= function(){
-    console.log('clicked right');
     //Calculate if user can move right
     if(isOutBoundChecks(digitalX+1, digitalY)){return;}
     var cell = currentMaze[digitalY][digitalX];
-    console.log('cell?', cell)
     if(cell.right){return;}
     digitalX = digitalX+1;
     //If they can move left, update player value
@@ -225,7 +214,6 @@ function setupKeyBehaviors(){
   }
 
   up.press= function(){
-    console.log('clicked up');
     if(isOutBoundChecks(digitalX, digitalY-1)){return;}
     var cell =  currentMaze[digitalY][digitalX];
     if(cell.top){return;}
@@ -234,7 +222,6 @@ function setupKeyBehaviors(){
   }
 
   down.press= function(){
-    console.log('clicked up');
     if(isOutBoundChecks(digitalX, digitalY+1)){return;}
     var cell =  currentMaze[digitalY][digitalX];
     if(cell.bottom){return;}
@@ -254,15 +241,6 @@ function drawPlayer(x,y){
    player.y = ((app.renderer.height-scale)/stageSizes[difficulty].c)+(digitalY*scale) + stageSizes[difficulty].offsetY+(scale/2)
    player.width = scale/2;
    player.height=scale/2;
-   /*
-   player = new PIXI.Graphics();
-   player.beginFill(0x000000);
-   player.drawCircle(
-     ((app.renderer.width-scale)/stageSizes[difficulty].r)+(digitalX*scale)+stageSizes[difficulty].offsetX+(scale/2+radiusSize/2),
-     ((app.renderer.height-scale)/stageSizes[difficulty].c)+(digitalY*scale) + stageSizes[difficulty].offsetY+(scale/2+radiusSize/2),
-     15);
-   player.endFill();
-   */
    mazeStage.addChild(player);
 }
 
@@ -309,13 +287,14 @@ function drawMaze(currentMaze){
       }
 
       //test reference icon
+      /*
       var test = new Sprite(loader.resources.button.texture);
       test.width = 5;
       test.height = 5;
       test.x = ((app.renderer.width-scale)/stageSizes[difficulty].r)+(indexJ*scale) +15+ stageSizes[difficulty].offsetX;
       test.y = ((app.renderer.height-scale)/stageSizes[difficulty].c)+(indexI*scale) +15 + stageSizes[difficulty].offsetY;
       mazeStage.addChild(test);
-
+      */
     })
   })
 
