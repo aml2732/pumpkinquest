@@ -13,17 +13,17 @@ async function runner(){
 
   console.log("Began generating easy mazes...")
   for(let i=0;i<numberOfEasyMazes; i++){
-    easyMazes.push(generator(8, 8));
+    easyMazes.push(generator(8, 8, true, i));
   }
 
   console.log("Begin generating medium mazes...");
   for(let i=0;i<numberOfMediumMazes; i++){
-    mediumMazes.push(generator(10, 10));
+    mediumMazes.push(generator(10, 10, true, i));
   }
 
   console.log("Begin generating hard mazes...");
   for(let i=0;i<numberOfHardMazes; i++){
-    hardMazes.push(generator(15, 15));
+    hardMazes.push(generator(15, 15, true, i));
   }
 
   const output = {

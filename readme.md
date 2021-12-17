@@ -5,7 +5,7 @@ A slightly more advanced game than previously attempted, [here](https://github.c
 [https://aml2732.github.io/pumpkinquest/](https://aml2732.github.io/pumpkinquest/)
 
 ## Setup maze file
-- `node generateMazeScript`
+- `node generateMazeScripts`
 
 ## Setup Dev Server
 - `npm install`

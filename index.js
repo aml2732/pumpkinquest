@@ -173,6 +173,34 @@ function keyboard(value) {
   return key;
 }
 
+function winScreen(){
+  console.log('got to winScreen!')
+}
+
+function resetBoard(){
+  app.stage.removeChild(mazeStage);
+  player = undefined;
+  digitalY = 0;
+  digitalX = 0;
+  left = undefined;
+  right = undefined;
+  up=undefined;
+  down=undefined;
+}
+
+function playerWinAnimation(){
+  let count =0;
+  var animationInterval;
+  function flip(){
+    player.scale.x = player.scale.x*-1;
+    count++;
+    if(count>9 && animationInterval){
+      clearInterval(animationInterval);
+    }
+  }
+  animationInterval = setInterval(flip, 300);
+}
+
 function isWinConditionMet(){
   let currentMaze = levels[difficulty][subLevel%levels[difficulty].length];
   return (digitalX==(currentMaze.length-1) && digitalY==(currentMaze[0].length-1))
@@ -181,12 +209,23 @@ function isWinConditionMet(){
 function checkWinCondition(){
   if(isWinConditionMet()){
     console.log('WinCondition met');
+    playerWinAnimation();
+    setTimeout(function(){
+      if((subLevel+1)<levels[difficulty].length){
+        subLevel = subLevel+1;
+        resetBoard();
+        beginGame();
+      }else{
+        //Display win screen
+        winScreen();
+      }
+
+    },3000);
   }
 }
 
 function movePlayer(){
    var scale = stageSizes[difficulty].scale;
-   var radiusSize = 15;
    tempX = ((app.renderer.width-scale)/stageSizes[difficulty].r)+(digitalX*scale)+stageSizes[difficulty].offsetX+(scale/2);
    tempY = ((app.renderer.height-scale)/stageSizes[difficulty].c)+(digitalY*scale) + stageSizes[difficulty].offsetY+(scale/2);
    player.position.set(tempX, tempY)
@@ -250,7 +289,6 @@ function setupKeyBehaviors(){
 
 function drawPlayer(x,y){
    var scale = stageSizes[difficulty].scale;
-   var radiusSize = 15;
    player = new Sprite(loader.resources.player.texture);
    player.x =  ((app.renderer.width-scale)/stageSizes[difficulty].r)+(digitalX*scale)+stageSizes[difficulty].offsetX+(scale/2)
    player.y = ((app.renderer.height-scale)/stageSizes[difficulty].c)+(digitalY*scale) + stageSizes[difficulty].offsetY+(scale/2)
