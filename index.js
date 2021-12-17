@@ -182,10 +182,10 @@ function resetBoard(){
   player = undefined;
   digitalY = 0;
   digitalX = 0;
-  left = undefined;
-  right = undefined;
-  up=undefined;
-  down=undefined;
+  left.unsubscribe();
+  right.unsubscribe();
+  up.unsubscribe();
+  down.unsubscribe();
 }
 
 function playerWinAnimation(){
@@ -226,6 +226,7 @@ function checkWinCondition(){
 
 function movePlayer(){
    var scale = stageSizes[difficulty].scale;
+   console.log(`(digitalX,digital) : (${digitalX}, ${digitalY})`);
    tempX = ((app.renderer.width-scale)/stageSizes[difficulty].r)+(digitalX*scale)+stageSizes[difficulty].offsetX+(scale/2);
    tempY = ((app.renderer.height-scale)/stageSizes[difficulty].c)+(digitalY*scale) + stageSizes[difficulty].offsetY+(scale/2);
    player.position.set(tempX, tempY)
