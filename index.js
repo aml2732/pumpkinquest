@@ -226,7 +226,6 @@ function checkWinCondition(){
 
 function movePlayer(){
    var scale = stageSizes[difficulty].scale;
-   console.log(`(digitalX,digital) : (${digitalX}, ${digitalY})`);
    tempX = ((app.renderer.width-scale)/stageSizes[difficulty].r)+(digitalX*scale)+stageSizes[difficulty].offsetX+(scale/2);
    tempY = ((app.renderer.height-scale)/stageSizes[difficulty].c)+(digitalY*scale) + stageSizes[difficulty].offsetY+(scale/2);
    player.position.set(tempX, tempY)
@@ -298,13 +297,28 @@ function drawPlayer(x,y){
    mazeStage.addChild(player);
 }
 
+function drawLevelNumber(){
+  var text = 'Difficulty: '+ difficulty + '; Level: '+ subLevel + '/'+levels[difficulty].length;
+  var levelText =  new PIXI.Text(text, {"fill": "black", "align": "center"});
+  levelText.x = app.renderer.width - (text.length*12);
+  levelText.y = 10;
+  console.log('text x,y', `${levelText.x}, ${levelText.y}`)
+  mazeStage.addChild(levelText)
+}
+
 function drawMaze(currentMaze){
   var scale = stageSizes[difficulty].scale;
+  var forceablyOpenMazeParts = {
+    topLeft:0,
+    topTop:0,
+    bottomRight: currentMaze.length -1,
+    bottomBottom:currentMaze[0].length-1
+  }
 
   currentMaze.forEach(function ilevelfunc(itemI, indexI){
     currentMaze[indexI].forEach(function(itemJ, indexJ){
 
-      if(currentMaze[indexI][indexJ].left){
+      if(currentMaze[indexI][indexJ].left && !(itemJ.x === forceablyOpenMazeParts.topLeft && itemJ.y=== forceablyOpenMazeParts.topTop)){
         var mazewallLeft = new Sprite(loader.resources.mazewall.texture);
         mazewallLeft.width = scale/4;
         mazewallLeft.height = scale*1.25;
@@ -313,7 +327,7 @@ function drawMaze(currentMaze){
         mazeStage.addChild(mazewallLeft);
       }
 
-      if(currentMaze[indexI][indexJ].top){
+      if(currentMaze[indexI][indexJ].top  && !(itemJ.x === forceablyOpenMazeParts.topLeft && itemJ.y=== forceablyOpenMazeParts.topTop)){
         var mazewallTop = new Sprite(loader.resources.mazewall.texture);
         mazewallTop.width = scale;
         mazewallTop.height = scale/4;
@@ -322,7 +336,7 @@ function drawMaze(currentMaze){
         mazeStage.addChild(mazewallTop);
       }
 
-      if(currentMaze[indexI][indexJ].right){
+      if(currentMaze[indexI][indexJ].right  && !(itemJ.x === forceablyOpenMazeParts.bottomRight && itemJ.y=== forceablyOpenMazeParts.bottomBottom)){
         var mazewallRight = new Sprite(loader.resources.mazewall.texture);
         mazewallRight.width = scale/4;
         mazewallRight.height = scale*1.25;
@@ -331,7 +345,7 @@ function drawMaze(currentMaze){
         mazeStage.addChild(mazewallRight);
       }
 
-      if(currentMaze[indexI][indexJ].bottom){
+      if(currentMaze[indexI][indexJ].bottom  && !(itemJ.x === forceablyOpenMazeParts.bottomRight && itemJ.y=== forceablyOpenMazeParts.bottomBottom)){
         var mazewallBottom = new Sprite(loader.resources.mazewall.texture);
         mazewallBottom.width = scale;
         mazewallBottom.height = scale/4;
@@ -380,8 +394,8 @@ function playMaze(){
   mazeStage = new PIXI.Container();
   app.renderer.backgroundColor = "0xE79C29";
   var currentMaze = levels[difficulty][subLevel%levels[difficulty].length];
-  console.log(currentMaze);
   drawMaze(currentMaze);
+  drawLevelNumber();
   drawPlayer(0,0);
   setupKeyBehaviors();
   app.stage.addChild(mazeStage);
