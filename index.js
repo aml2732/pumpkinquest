@@ -14,7 +14,7 @@ var stageSizes = {
 //let resources = PIXI.loader.resources;
 document.body.appendChild(app.view);
 
-var startStage, levelSelectStage, mazeStage;
+var startStage, levelSelectStage, mazeStage, winStage;
 var player;
 var left, right, up, down;
 var digitalX, digitalY;
@@ -174,7 +174,24 @@ function keyboard(value) {
 }
 
 function winScreen(){
+  winStage = new PIXI.Container();
+  app.renderer.backgroundColor = "0xE79C29";
   console.log('got to winScreen!')
+
+  var textHeading = new PIXI.Text("Winner, Winner, Chicken Dinner!", {"fill": "black", "align": "center"});
+  var subTextHeading = new PIXI.Text("Congrats on getting through all those mazes!", {"fill": "black", "align": "center"});
+
+  textHeading.x=app.renderer.width/2 - (textHeading.width/2);
+  textHeading.y=200;
+  subTextHeading.x= app.renderer.width/2 - (subTextHeading.width/2);
+  subTextHeading.y=300;
+
+  console.log(`textHeading x,y (${textHeading.x}, ${textHeading.y})`)
+
+  winStage.addChild(textHeading);
+  winStage.addChild(subTextHeading);
+  app.stage.addChild(winStage);
+  app.renderer.render(winStage);
 }
 
 function resetBoard(){
@@ -217,6 +234,7 @@ function checkWinCondition(){
         beginGame();
       }else{
         //Display win screen
+        resetBoard();
         winScreen();
       }
 
