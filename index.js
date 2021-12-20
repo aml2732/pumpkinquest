@@ -1,5 +1,9 @@
+/*
+Angela Lloyd 2021
+Pumpkin Quest
+*/
+
 console.log("game app loaded");
-console.log('levels', levels);
 var app = new PIXI.Application({ width: 800, height: 600 });
 var graphics = new PIXI.Graphics();
 let loader = PIXI.Loader.shared;
@@ -11,8 +15,7 @@ var stageSizes = {
   'medium': {r: 10, c:10, offsetX:100, offsetY: 20, scale: 45},
   'hard': {r: 15, c:15, offsetX:200, offsetY: 40, scale: 30}
 }
-//let resources = PIXI.loader.resources;
-document.body.appendChild(app.view);
+document.getElementById('gameGoesHere').appendChild(app.view);
 
 var startStage, levelSelectStage, mazeStage, winStage;
 var player;
@@ -235,7 +238,6 @@ function isWinConditionMet(){
 
 function checkWinCondition(){
   if(isWinConditionMet()){
-    console.log('WinCondition met');
     playerWinAnimation();
     setTimeout(function(){
       if((subLevel+1)<levels[difficulty].length){
@@ -310,8 +312,6 @@ function setupKeyBehaviors(){
     movePlayer();
     checkWinCondition();
   }
-
-
 }
 
 
@@ -330,7 +330,6 @@ function drawLevelNumber(){
   var levelText =  new PIXI.Text(text, {"fill": "black", "align": "center"});
   levelText.x = app.renderer.width - (text.length*12);
   levelText.y = 10;
-  console.log('text x,y', `${levelText.x}, ${levelText.y}`)
   mazeStage.addChild(levelText)
 }
 
@@ -431,13 +430,11 @@ function playMaze(){
 }
 
 function beginGame(){
-  console.log('begingame difficulty:', difficulty);
   app.stage.removeChild(levelSelectStage);
   playMaze();
 }
 
 function levelSelect(){
-  console.log('levelSelect');
   app.stage.removeChild(startStage);
   app.stage.removeChild(winStage);
   selectDifficulty();
