@@ -33,7 +33,7 @@ function startScreen(){
   startStage = new PIXI.Container();
   app.renderer.backgroundColor = "0xE79C29";
 
-  var startTextHeader = new PIXI.Text(`Pumpkin Quest`, {"fill": "black", "fontSize": "3rem","align":"right"});
+  var startTextHeader = new PIXI.Text(`Pumpkin Quest`, {"fill": "black", "fontSize": "3rem","align":"right", "padding": 20, "fontFamily": "Impact"});
   startTextHeader.x = 50;
   startTextHeader.y = app.renderer.height/2 -120;
 
@@ -43,7 +43,7 @@ function startScreen(){
   startButton.y = app.renderer.height/2 - 20;
   startButton.interactive = true;
   startButton.buttonMode = true;
-  var startText = new PIXI.Text('Start -->', {"fill": "white", "align": "center"});
+  var startText = new PIXI.Text('Start →', {"fill": "white", "align": "center"});
   startText.x = startButton.x  +20;
   startText.y = 30;
   startButton.addChild(startText);
@@ -78,7 +78,7 @@ function selectDifficulty(){
   levelEasyButton.y = app.renderer.height/4 - 20;
   levelEasyButton.interactive = true;
   levelEasyButton.buttonMode = true;
-  var levelEasyText = new PIXI.Text('Easy -->', {"fill": "white", "align": "center"});
+  var levelEasyText = new PIXI.Text('Easy →', {"fill": "white", "align": "center"});
   levelEasyText.x = levelEasyButton.x  +20;
   levelEasyText.y = 30;
   levelEasyButton.addChild(levelEasyText);
@@ -93,7 +93,7 @@ function selectDifficulty(){
   levelMediumButton.y = (app.renderer.height/2) - 20;
   levelMediumButton.interactive = true;
   levelMediumButton.buttonMode = true;
-  var levelMediumText = new PIXI.Text('Medium -->', {"fill": "white", "align": "center"});
+  var levelMediumText = new PIXI.Text('Medium →', {"fill": "white", "align": "center"});
   levelMediumText.x = levelMediumButton.x  +20;
   levelMediumText.y = 30;
   levelMediumButton.addChild(levelMediumText);
@@ -108,7 +108,7 @@ function selectDifficulty(){
   levelHardButton.y = ((app.renderer.height/4)*3) - 20;
   levelHardButton.interactive = true;
   levelHardButton.buttonMode = true;
-  var levelHardText = new PIXI.Text('Hard -->', {"fill": "white", "align": "center"});
+  var levelHardText = new PIXI.Text('Hard →', {"fill": "white", "align": "center"});
   levelHardText.x = levelHardButton.x  +20;
   levelHardText.y = 30;
   levelHardButton.addChild(levelHardText);
@@ -176,20 +176,30 @@ function keyboard(value) {
 function winScreen(){
   winStage = new PIXI.Container();
   app.renderer.backgroundColor = "0xE79C29";
-  console.log('got to winScreen!')
 
-  var textHeading = new PIXI.Text("Winner, Winner, Chicken Dinner!", {"fill": "black", "align": "center"});
-  var subTextHeading = new PIXI.Text("Congrats on getting through all those mazes!", {"fill": "black", "align": "center"});
+  var textHeading = new PIXI.Text("Winner, Winner, Chicken Dinner!", {"fill": "black", "align": "center", "fontSize": "2rem", "padding": 20, "fontStyle": "bold"});
+  var subTextHeading = new PIXI.Text("Congrats on getting through all those mazes!", {"fill": "black", "align": "center",  "wordWrap": true, "wordWrapWidth": 300});
 
   textHeading.x=app.renderer.width/2 - (textHeading.width/2);
   textHeading.y=200;
   subTextHeading.x= app.renderer.width/2 - (subTextHeading.width/2);
-  subTextHeading.y=300;
+  subTextHeading.y=250;
 
-  console.log(`textHeading x,y (${textHeading.x}, ${textHeading.y})`)
+  var startButton = new Sprite(loader.resources.button.texture);
+  startButton.x =( app.renderer.width/2) -130;
+  startButton.y = 350;
+  startButton.interactive = true;
+  startButton.buttonMode = true;
+  var startText = new PIXI.Text('Re-play →', {"fill": "white", "align": "center"});
+  startText.x = 40;
+  startText.y = 30;
+  startButton.addChild(startText);
+  startButton.on('pointerdown', levelSelect);
+
 
   winStage.addChild(textHeading);
   winStage.addChild(subTextHeading);
+  winStage.addChild(startButton);
   app.stage.addChild(winStage);
   app.renderer.render(winStage);
 }
@@ -316,7 +326,7 @@ function drawPlayer(x,y){
 }
 
 function drawLevelNumber(){
-  var text = 'Difficulty: '+ difficulty + '; Level: '+ subLevel + '/'+levels[difficulty].length;
+  var text = 'Difficulty: '+ difficulty + '; Level: '+ (subLevel+1) + '/'+levels[difficulty].length;
   var levelText =  new PIXI.Text(text, {"fill": "black", "align": "center"});
   levelText.x = app.renderer.width - (text.length*12);
   levelText.y = 10;
@@ -390,7 +400,7 @@ function drawMaze(currentMaze){
   startPoint.y = ((app.renderer.height-scale)/stageSizes[difficulty].c) -50 + stageSizes[difficulty].offsetY;
   startPoint.width =100;
   startPoint.height =50;
-  var startPointText = new PIXI.Text('Start -->', {"fill": "white", "align": "center"});
+  var startPointText = new PIXI.Text('Start →', {"fill": "white", "align": "center"});
   startPointText.x =   50;
   startPointText.y = 30;
   startPoint.addChild(startPointText);
@@ -429,6 +439,7 @@ function beginGame(){
 function levelSelect(){
   console.log('levelSelect');
   app.stage.removeChild(startStage);
+  app.stage.removeChild(winStage);
   selectDifficulty();
 }
 
